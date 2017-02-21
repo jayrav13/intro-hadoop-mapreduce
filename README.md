@@ -96,7 +96,7 @@ This `~/.ssh/config` file with the `authorized_keys` strategy allows for full Pa
 
 On to the real deal! For this section, the guide<sup>[1]</sup> that I used recommended having all of the nodes open on a screen together so files across instances can be updated simultaneously. This suggestion was put forward instead of a strategy to create a single AMI and use it for all four instances. This was a misstep in my part, but I did end up provisioning all four instances manually, so will discuss as such:
 
-![iTerm TMUX](./assets/03_iTERM_tmux.png)
+![iTerm TMUX](./assets/03_iTerm_tmux.png)
 
 First, we need to install Java. Here, I install **OpenJDK Runtime Environment**. Note that the guide<sup>[1]</sup> uses `1.7.0`.
 
