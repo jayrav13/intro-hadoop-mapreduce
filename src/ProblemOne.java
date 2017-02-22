@@ -159,6 +159,36 @@ public class ProblemOne {
 		}
 	}
 
+	// Mapper Class
+	public static class CondenseMapper extends Mapper<Object, Text, Text, IntWritable>{
+
+		// IntWritable will set the context.write(...)'s value.
+		private final static IntWritable one = new IntWritable(1);
+
+		// Map function
+		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+
+			String phrase = value.toString().trim().split("-")[0].trim();
+			context.write(new Text(phrase), new IntWritable(1));
+
+		}
+	}
+
+	// Reducer Class
+	public static class CondenseReducer extends Reducer<Text,IntWritable,Text,IntWritable> {
+
+		// Reduce function.
+		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+
+			int sum = 0;
+			for (IntWritable val : values) {
+				sum += val.get();
+			}
+			context.write(key, new IntWritable(sum));
+
+		}
+	}
+
 	// Main function.
 	public static void main(String[] args) throws Exception {
 
@@ -226,7 +256,38 @@ public class ProblemOne {
 		FileOutputFormat.setOutputPath(job2, new Path("/project/problems/one/manipulation_job" /*args[1]*/));
 
 		// Exit when done.
-		System.exit(job2.waitForCompletion(true) ? 0 : 1);
+		job2.waitForCompletion(true);
+
+		/**
+		 *	Job 3
+		 */
+		// Set up a new job and give it a name.
+		Job job3 = Job.getInstance(conf, "Condenser Job");
+
+		// When creating jar, use this class name.
+		job3.setJarByClass(ProblemOne.class);
+
+		// Class for mapping.
+		job3.setMapperClass(CondenseMapper.class);
+
+		// Class for combining.
+		job3.setCombinerClass(CondenseReducer.class);
+
+		// Class for reducing.
+		job3.setReducerClass(CondenseReducer.class);
+
+		// What object type is the output key.
+		job3.setOutputKeyClass(Text.class);
+
+		// What object type is the output value.
+		job3.setOutputValueClass(IntWritable.class);
+
+		// Set input and output paths.
+		FileInputFormat.addInputPath(job3, new Path("/project/problems/one/manipulation_job" /*args[0]*/));
+		FileOutputFormat.setOutputPath(job3, new Path(args[1]));
+
+		// Exit when done.
+		System.exit(job3.waitForCompletion(true) ? 0 : 1);
 
 	}
 
