@@ -136,29 +136,42 @@ public class ProblemTwo {
 		// Reduce function.
 		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
 
-			// Store results.
-			ArrayList<Integer> ints = new ArrayList<Integer>();
-			Map<Integer, String> map = new HashMap<Integer, String>();
-			ArrayList<String> str = new ArrayList<String>();
+			StringBuilder sb = new StringBuilder();
 
 			// Iterate through a state's phrases.
 			for (Text val : values) {
-				str.add(val.toString());
+				sb.append(val.toString()).append(",");
 			}
 
-			int index = 0;
-			int count = -1;
-			for(int i = 0; i < str.size(); i++) {
-				ints.add( Integer.parseInt( str.get(i).split("-")[1] ) );
-				map.put( Integer.parseInt( str.get(i).split("-")[1] ), str.get(i).split("-")[0] );
+			context.write( key, new Text( sb.toString() ) );
+
+		}
+	}
+
+	// Mapper Class
+	public static class SortMapper extends Mapper<Object, Text, Text, IntWritable>{
+
+		// Map function
+		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
+
+			// String[] data = key.toString().split(",");
+
+			for(int i = 0; i < data.length; i++) {
+				// context.write(new Text(data[i]), new IntWritable(i));
 			}
+			context.write(value, new IntWritable(1));
 
-			Collections.sort( ints );
-			StringBuilder rebuild = new StringBuilder();
+		}
+	}
 
-			for(int i = 0; i < ints.size(); i++) {
-				//rebuild.append( ints.get(i) )
-				context.write( new Text(str.get(index)), new Text( ints.get(i).toString() ) );
+	// Mapper Class
+	public static class SortReducer extends Reducer<Text, IntWritable, Text, IntWritable>{
+
+		// Map function
+		public void map(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+
+			for(IntWritable val : values) {
+				context.write(key, val);
 			}
 		}
 	}
@@ -227,10 +240,42 @@ public class ProblemTwo {
 
 		// Set input and output paths.
 		FileInputFormat.addInputPath(job2, new Path( "/project/problems/two/full_document_count"));
-		FileOutputFormat.setOutputPath(job2, new Path(args[1]));
+		FileOutputFormat.setOutputPath(job2, new Path("/project/problems/two/manipulation_job"));
 
 		// Exit when done.
-		System.exit(job2.waitForCompletion(true) ? 0 : 1);
+		// System.exit(job2.waitForCompletion(true) ? 0 : 1);
+		job2.waitForCompletion(true);
+
+		/**
+		 *	Job 3
+		 */
+		// Set up a new job and give it a name.
+		Job job3 = Job.getInstance(conf, "Sort Job");
+
+		// When creating jar, use this class name.
+		job3.setJarByClass(ProblemTwo.class);
+
+		// Class for mapping.
+		job3.setMapperClass(SortMapper.class);
+
+		// Class for combining.
+		job3.setCombinerClass(SortReducer.class);
+
+		// Class for reducing.
+		job3.setReducerClass(SortReducer.class);
+
+		// What object type is the output key.
+		job3.setOutputKeyClass(Text.class);
+
+		// What object type is the output value.
+		job3.setOutputValueClass(IntWritable.class);
+
+		// Set input and output paths.
+		FileInputFormat.addInputPath(job3, new Path("/project/problems/two/manipulation_job"));
+		FileOutputFormat.setOutputPath(job3, new Path(args[1]));
+
+		// Exit when done.
+		System.exit(job3.waitForCompletion(true) ? 0 : 1);
 
 	}
 
