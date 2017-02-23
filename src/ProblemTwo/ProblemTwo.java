@@ -154,12 +154,27 @@ public class ProblemTwo {
 		// Map function
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
-			// String[] data = key.toString().split(",");
+			String[] breakdown = value.toString().split("\t");
 
-			for(int i = 0; i < data.length; i++) {
-				// context.write(new Text(data[i]), new IntWritable(i));
+			String list = breakdown[1];
+			String[] rank = list.split(",");
+
+			Map<Integer, String> map = new HashMap<Integer, String>();
+
+			for(int i = 0; i < rank.length; i++) {
+				String[] current = rank[i].split("-");
+				map.put( Integer.parseInt( current[1] ) , current[0] );
 			}
-			context.write(value, new IntWritable(1));
+
+			StringBuilder result = new StringBuilder();
+			Map<Integer, String> treeMap = new TreeMap<Integer, String>(map);
+
+			for(Integer val : treeMap.keySet()) {
+				result.append( map.get( val ) ).append(",");
+				map.remove( val );
+			}
+
+			context.write( new Text( result.toString() ), new IntWritable(1));
 
 		}
 	}
@@ -168,11 +183,15 @@ public class ProblemTwo {
 	public static class SortReducer extends Reducer<Text, IntWritable, Text, IntWritable>{
 
 		// Map function
-		public void map(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
+		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 
+			int sum = 0;
 			for(IntWritable val : values) {
-				context.write(key, val);
+				sum += val.get();
 			}
+
+			context.write( new Text(sb.toString()) , new IntWritable(sum));
+
 		}
 	}
 
