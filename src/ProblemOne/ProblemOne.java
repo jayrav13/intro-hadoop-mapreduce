@@ -1,7 +1,7 @@
 /**
- *	StateWordCountStateReduce
+ *	ProblemOne
  *
- *
+ *	This is a chained set of jobs in MapReduce.
  */
 
 // Imports
@@ -124,6 +124,7 @@ public class ProblemOne {
 
 			StringBuilder sb = new StringBuilder();
 			sb.append(phrase).append("-").append(values[1]);
+			System.out.println(state);
 			context.write(new Text(state), new Text(sb.toString()));
 
 		}
@@ -147,7 +148,7 @@ public class ProblemOne {
 			}
 
 			int index = 0;
-			int count = 0;
+			int count = -1;
 			for(int i = 0; i < str.size(); i++) {
 				if( Integer.parseInt( str.get(i).split("-")[1] ) > count ) {
 					index = i;
@@ -155,6 +156,7 @@ public class ProblemOne {
 				}
 			}
 
+			System.out.println(key.toString());
 			context.write( new Text(str.get(index)), new Text(str.get(index)) );
 		}
 	}
