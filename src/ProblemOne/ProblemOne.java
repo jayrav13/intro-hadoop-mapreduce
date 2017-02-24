@@ -108,11 +108,10 @@ public class ProblemOne {
 			// Tokenize, iterate.
 			StringTokenizer st = new StringTokenizer(value.toString());
 			while (st.hasMoreTokens()) {
-
 				values[counter] = st.nextToken();
 				counter += 1;
-
 			}
+
 			counter = 0;
 
 			// Substrings for state and phrase.
@@ -120,11 +119,10 @@ public class ProblemOne {
 			String state = values[0].substring(0, lastElemIndex);
 			String phrase = values[0].substring(lastElemIndex + 1, values[0].length());
 
-			// int count = Integer.parseInt(values[1]);
-
+			// Use a StringBuilder to put together an output string.
 			StringBuilder sb = new StringBuilder();
 			sb.append(phrase).append("-").append(values[1]);
-			System.out.println(state);
+
 			context.write(new Text(state), new Text(sb.toString()));
 
 		}
@@ -147,6 +145,7 @@ public class ProblemOne {
 				str.add(val.toString());
 			}
 
+			// Determine max index for reducer.
 			int index = 0;
 			int count = -1;
 			for(int i = 0; i < str.size(); i++) {
@@ -156,7 +155,6 @@ public class ProblemOne {
 				}
 			}
 
-			System.out.println(key.toString());
 			context.write( new Text(str.get(index)), new Text(str.get(index)) );
 		}
 	}
@@ -182,6 +180,7 @@ public class ProblemOne {
 		// Reduce function.
 		public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
 
+			// Sum up all for final result.
 			int sum = 0;
 			for (IntWritable val : values) {
 				sum += val.get();

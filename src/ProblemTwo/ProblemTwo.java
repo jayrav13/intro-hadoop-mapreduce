@@ -1,5 +1,5 @@
 /**
- *	ProblemOne
+ *	ProblemTwo
  *
  *	This is a chained set of jobs in MapReduce.
  */
@@ -120,8 +120,7 @@ public class ProblemTwo {
 			String state = values[0].substring(0, lastElemIndex);
 			String phrase = values[0].substring(lastElemIndex + 1, values[0].length());
 
-			// int count = Integer.parseInt(values[1]);
-
+			// Build String
 			StringBuilder sb = new StringBuilder();
 			sb.append(phrase).append("-").append(values[1]);
 
@@ -154,21 +153,29 @@ public class ProblemTwo {
 		// Map function
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 
+			// Breakdown string by tab.
 			String[] breakdown = value.toString().split("\t");
 
+			// Split up all {term}-{count} by comma.
 			String list = breakdown[1];
 			String[] rank = list.split(",");
 
+			// Store into a hashmap - each term is {term}-{count}
 			Map<Integer, String> map = new HashMap<Integer, String>();
 
+			// Split these up in a hashmap into { count : term}
 			for(int i = 0; i < rank.length; i++) {
 				String[] current = rank[i].split("-");
 				map.put( Integer.parseInt( current[1] ) , current[0] );
 			}
 
+			// Result will store all terms in order.
 			StringBuilder result = new StringBuilder();
+
+			// Create a sorted hashmap.
 			Map<Integer, String> treeMap = new TreeMap<Integer, String>(map);
 
+			// Grab all terms (and remove them from the sorted hashmap as we go).
 			for(Integer val : treeMap.keySet()) {
 				result.append( map.get( val ) ).append(",");
 				map.remove( val );
