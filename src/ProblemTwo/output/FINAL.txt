@@ -1,0 +1,14 @@
+agriculture,education,politics,sports,	1
+agriculture,education,sports,politics,	2
+agriculture,politics,education,sports,	6
+agriculture,politics,sports,education,	15
+agriculture,sports,education,	2
+agriculture,sports,education,politics,	4
+agriculture,sports,politics,education,	11
+education,sports,	1
+politics,agriculture,sports,education,	1
+politics,sports,education,	1
+sports,agriculture,education,	1
+sports,agriculture,education,politics,	1
+sports,agriculture,politics,education,	3
+sports,education,politics,	1

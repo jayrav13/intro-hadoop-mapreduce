@@ -190,7 +190,7 @@ public class ProblemTwo {
 				sum += val.get();
 			}
 
-			context.write( new Text(sb.toString()) , new IntWritable(sum));
+			context.write( key , new IntWritable(sum));
 
 		}
 	}
