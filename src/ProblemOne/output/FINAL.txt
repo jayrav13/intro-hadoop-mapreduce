@@ -1,0 +1,3 @@
+education	33
+politics	9
+sports	7
