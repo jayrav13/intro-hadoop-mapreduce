@@ -334,6 +334,8 @@ The Source Code for this assignment is available under `src/`. For each submissi
 
 I used Apache's Hadoop Tutorial <sup>[2]</sup> as my starter code to build this out.
 
+**NOTE**: For `ProblemOne`, the first part of this is available under `full_document_count.txt`.
+
 ### Issues
 
 1. For both outputs, the sum of the counts consistently came out to 49, versus the expected 50, representing the 50 states as inputs. 
